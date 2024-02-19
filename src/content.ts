@@ -21,50 +21,49 @@ export class Content {
   public static async initialize(device: GPUDevice): Promise<void> {
     this.playerTexture = await Texture.createtextureFromURL(
       device,
-      // "assets/uv_test.png"
-      "assets/PNG/playerShip1_blue.png"
+      "./assets/PNG/playerShip1_blue.png"
     );
 
     this.ufoTexture = await Texture.createtextureFromURL(
       device,
-      "assets/PNG/ufoRed.png"
+      "./assets/PNG/ufoRed.png"
     );
 
     this.uvTexture = await Texture.createtextureFromURL(
       device,
-      "assets/uv_test.png"
+      "./assets/uv_test.png"
     );
     this.spriteSheetTexture = await Texture.createtextureFromURL(
       device,
-      "assets/Spritesheet/sheet.png"
+      "./assets/Spritesheet/sheet.png"
     );
 
     this.backgroundTexture = await Texture.createtextureFromURL(
       device,
-      "assets/Backgrounds/purple.png"
+      "./assets/Backgrounds/purple.png"
     );
 
     this.explosionTexture = await Texture.createtextureFromURL(
       device,
-      "assets/explosion.png"
+      "./assets/explosion.png"
     );
 
     this.iceTexture = await Texture.createtextureFromURL(
       device,
-      "assets/ice03.jpg"
+      "./assets/ice03.jpg"
     );
 
     await this.loadSpriteSheet();
 
     this.spriteFont = await this.loadSnowBSpriteFont(
       device,
-      "assets/SpriteFont.xml",
-      "assets/SpriteFont.png"
+      "./assets/SpriteFont.xml",
+      "./assets/SpriteFont.png"
     );
   }
 
   private static async loadSpriteSheet() {
-    const sheetXmlReq = await fetch("assets/Spritesheet/sheet.xml");
+    const sheetXmlReq = await fetch("./assets/Spritesheet/sheet.xml");
     const sheetXmlText = await sheetXmlReq.text();
 
     const parser = new DOMParser();

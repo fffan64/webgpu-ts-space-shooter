@@ -27,7 +27,8 @@ engine.initialize().then(async () => {
     hightScore
   );
 
-  const postProcessEffect = await engine.effectsFactory.createBloomEffect();
+  const postProcessEffect1 = await engine.effectsFactory.createBloomEffect();
+  const postProcessEffect2 = await engine.effectsFactory.createCrtEffect();
 
   engine.onUpdate = (dt: number) => {
     player.update(dt);
@@ -38,8 +39,8 @@ engine.initialize().then(async () => {
   };
 
   engine.onDraw = () => {
-    engine.setDestinationTexture(postProcessEffect.sceneTexture.texture);
-    engine.setDestinationTexture2(postProcessEffect.brightnessTexture.texture);
+    engine.setDestinationTexture(postProcessEffect1.sceneTexture.texture);
+    engine.setDestinationTexture2(postProcessEffect1.brightnessTexture.texture);
 
     background.draw(engine.spriteRenderer);
     player.draw(engine.spriteRenderer);
@@ -48,7 +49,10 @@ engine.initialize().then(async () => {
     explosionManager.draw(engine.spriteRenderer);
     hightScore.draw(engine.spriteRenderer);
 
-    postProcessEffect.draw(engine.getCanvasTexture().createView());
+    postProcessEffect1.draw(engine.getCanvasTexture().createView());
+
+    engine.setDestinationTexture(postProcessEffect2.screenTexture.texture);
+    postProcessEffect2.draw(engine.getCanvasTexture().createView());
   };
 
   engine.draw();

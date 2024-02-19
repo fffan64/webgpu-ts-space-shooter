@@ -1,5 +1,6 @@
 import { BloomEffect } from "./bloom-effect";
 import { BlurEffect } from "./blur-effect";
+import { CrtEffect } from "./crt-effect";
 import { PostProcessEffect } from "./post-process-effect";
 import { TextureEffect } from "./texture-effect";
 
@@ -30,6 +31,12 @@ export class EffectsFactory {
 
   public async createBloomEffect(): Promise<BloomEffect> {
     const effect = new BloomEffect(this.device, this.width, this.height);
+    await effect.initialize();
+    return effect;
+  }
+
+  public async createCrtEffect(): Promise<CrtEffect> {
+    const effect = new CrtEffect(this.device, this.width, this.height);
     await effect.initialize();
     return effect;
   }

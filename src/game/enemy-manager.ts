@@ -27,7 +27,7 @@ export class EnemyManager {
       let enemy = this.pool.find((e) => !e.active);
 
       if (!enemy) {
-        enemy = new MeteorEnemy(this.gameWidth, this.gameHeight);
+        enemy = new MeteorEnemy();
         this.pool.push(enemy);
       }
 

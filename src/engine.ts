@@ -20,7 +20,7 @@ export class Engine {
   public gameBounds = vec2.create();
 
   public onUpdate: (dt: number) => void = () => {};
-  public onDraw: () => void = () => {};
+  public onDraw: (dt: number) => void = () => {};
 
   // if this is null we are rendering this to the screen
   private destinationTexture?: GPUTexture | null = null;
@@ -127,7 +127,7 @@ export class Engine {
 
     this.spriteRenderer.framePass(this.passEncoder);
 
-    this.onDraw();
+    this.onDraw(dt);
 
     this.spriteRenderer.frameEnd();
 

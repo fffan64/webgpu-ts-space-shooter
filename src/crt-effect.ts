@@ -1,6 +1,7 @@
 import { BufferUtil } from "./buffer-util";
 import { Texture } from "./texture";
-import shaderSource from "./shaders/crt-effect.wgsl?raw";
+// import shaderSource from "./shaders/crt-effect.wgsl?raw";
+import shaderSource from "./shaders/crt-effect2.wgsl?raw";
 
 export class CrtEffect {
   private gpuPipeline!: GPURenderPipeline;
@@ -9,6 +10,11 @@ export class CrtEffect {
   // screen texture
   public screenTexture!: Texture;
   private screenTextureBindGroup!: GPUBindGroup;
+
+  // time
+  public timeValue = 0.5;
+  private timeValueBuffer!: GPUBuffer;
+  private timeValueBindGroup!: GPUBindGroup;
 
   constructor(
     private device: GPUDevice,
@@ -47,6 +53,11 @@ export class CrtEffect {
       ])
     );
 
+    this.timeValueBuffer = BufferUtil.createUniformBuffer(
+      this.device,
+      new Float32Array([this.timeValue])
+    );
+
     const textureBindGroupLayout = this.device.createBindGroupLayout({
       entries: [
         {
@@ -58,6 +69,16 @@ export class CrtEffect {
           binding: 1,
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
+        },
+      ],
+    });
+
+    const timeValueBindGroupLayout = this.device.createBindGroupLayout({
+      entries: [
+        {
+          binding: 0,
+          visibility: GPUShaderStage.FRAGMENT,
+          buffer: {},
         },
       ],
     });
@@ -76,6 +97,20 @@ export class CrtEffect {
       ],
     });
 
+    this.timeValueBindGroup = this.device.createBindGroup({
+      layout: timeValueBindGroupLayout,
+      entries: [
+        {
+          binding: 0,
+          resource: {
+            buffer: this.timeValueBuffer,
+            offset: 0,
+            size: Float32Array.BYTES_PER_ELEMENT,
+          },
+        },
+      ],
+    });
+
     const shaderModule = this.device.createShaderModule({
       code: shaderSource,
     });
@@ -84,6 +119,7 @@ export class CrtEffect {
       layout: this.device.createPipelineLayout({
         bindGroupLayouts: [
           textureBindGroupLayout, // group(0)
+          timeValueBindGroupLayout, // group(1)
         ],
       }),
       vertex: {
@@ -136,9 +172,16 @@ export class CrtEffect {
       ],
     });
 
+    this.device.queue.writeBuffer(
+      this.timeValueBuffer,
+      0,
+      new Float32Array([this.timeValue])
+    );
+
     passEncoder.setPipeline(this.gpuPipeline);
     passEncoder.setVertexBuffer(0, this.gpuBuffer);
     passEncoder.setBindGroup(0, this.screenTextureBindGroup);
+    passEncoder.setBindGroup(1, this.timeValueBindGroup);
     passEncoder.draw(6, 1, 0, 0);
 
     passEncoder.end();

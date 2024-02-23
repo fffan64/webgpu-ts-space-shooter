@@ -27,8 +27,9 @@ engine.initialize().then(async () => {
     hightScore
   );
 
-  const postProcessEffect1 = await engine.effectsFactory.createBloomEffect();
-  const postProcessEffect2 = await engine.effectsFactory.createCrtEffect();
+  const bloomEffect = await engine.effectsFactory.createBloomEffect();
+  const crtEffect = await engine.effectsFactory.createCrtEffect();
+  // const grayEffect = await engine.effectsFactory.createPostProcessEffect();
 
   engine.onUpdate = (dt: number) => {
     player.update(dt);
@@ -38,10 +39,7 @@ engine.initialize().then(async () => {
     explosionManager.update(dt);
   };
 
-  engine.onDraw = () => {
-    engine.setDestinationTexture(postProcessEffect1.sceneTexture.texture);
-    engine.setDestinationTexture2(postProcessEffect1.brightnessTexture.texture);
-
+  engine.onDraw = (dt: number) => {
     background.draw(engine.spriteRenderer);
     player.draw(engine.spriteRenderer);
     enemyManager.draw(engine.spriteRenderer);
@@ -49,10 +47,15 @@ engine.initialize().then(async () => {
     explosionManager.draw(engine.spriteRenderer);
     hightScore.draw(engine.spriteRenderer);
 
-    postProcessEffect1.draw(engine.getCanvasTexture().createView());
+    // engine.setDestinationTexture(grayEffect.texture.texture);
+    // grayEffect.draw(engine.getCanvasTexture().createView());
+    crtEffect.timeValue = dt;
+    engine.setDestinationTexture(crtEffect.screenTexture.texture);
+    crtEffect.draw(engine.getCanvasTexture().createView());
 
-    engine.setDestinationTexture(postProcessEffect2.screenTexture.texture);
-    postProcessEffect2.draw(engine.getCanvasTexture().createView());
+    engine.setDestinationTexture(bloomEffect.sceneTexture.texture);
+    engine.setDestinationTexture2(bloomEffect.brightnessTexture.texture);
+    bloomEffect.draw(crtEffect.screenTexture.texture.createView());
   };
 
   engine.draw();
